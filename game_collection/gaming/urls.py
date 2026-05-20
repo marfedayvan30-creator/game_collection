@@ -25,4 +25,15 @@ urlpatterns = [
     path('games/delete/<int:game_id>', delete_game),
     ##PATCH
     path('games/update/<int:game_id>', patch_game),
+
+    #Developers
+    ##GET
+   path('dev', return_all_devs),
+    ##POST
+    path('dev/add', add_dev),
+    ##DELETE
+    path('dev/delete/<int:dev_id>', delete_dev),
+    ##PATCH
+    path('dev/update/<int:dev_id>', update_dev),
+
 ]

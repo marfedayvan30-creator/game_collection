@@ -178,7 +178,8 @@ def delete_game(request, game_id):
         return HttpResponse(f'Game id: {game_id} has been deleted', status=200)
     else:
         return HttpResponse('This is a DELETE endpoint only!', status=405)
-    
+
+#PATCH request for updating a game    
 def patch_game(request, game_id):
     if request.method == 'PATCH':
         game = get_object_or_404(Games, pk=game_id)
@@ -206,8 +207,121 @@ def patch_game(request, game_id):
         })
     else:
         return HttpResponse('This is a PATCH endpoint only!', status=405)
+    
+#GET request for displaying all devs
+def return_all_devs(request):
+    if request.method == 'GET':
+        devs = Developers.objects.all()
+        devs_serialized = []
 
+        for dev in devs:
+            devs_serialized.append(
+                {
+                    'dev_id': dev.id,
+                    'name': dev.name,
+                    'date_active': dev.date_active,
+                    'about': dev.about
+                }
+            )
+        
+        return JsonResponse(devs_serialized, safe=False)
+    else:
+        return HttpResponse('This is a GET only endpoint!', status=405)
 
+##POST request for adding new dev
+def add_dev(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        dev = Developers.objects.create(
+            name = data['name'],
+            date_active = data['date_active'],
+            about = data['about']
+        )
 
+        return JsonResponse(
+            {
+                'name': dev.name,
+                'date_active': dev.date_active,
+                'about': dev.about
+            }
+        )
+    else:
+        return HttpResponse('This is a POST only endpoint!', status=405)
+ 
+##DELETE request for deleting a dev
+def delete_dev(request, dev_id):
+    if request.method == 'DELETE':
+        dev = get_object_or_404(Developers, pk = dev_id)
 
+        dev.delete()
+        return HttpResponse(f'Developer id: {dev_id} has been deleted.', status=200)
+    else:
+        return HttpResponse('This is a DELETE only endpoint!')
+    
+##PATCH request for updating a dev
+def update_dev(request, dev_id):
+    if request.method == 'PATCH':
+        dev = get_object_or_404(Developers, pk=dev_id)
+        data = json.loads(request.body)
 
+        if 'name' in data:
+            dev.name = data['name']
+        if 'date_active' in data:
+            dev.date_active = data['date_active']
+        if 'about' in data:
+            dev.about = data['about']
+
+        return JsonResponse(
+            {
+                'id': dev.id,
+                'name': dev.name,
+                'date_active': dev.date_active,
+                'about': dev.about
+            }
+        )
+    else:
+        return HttpResponse('This is a PATCH endpoint only!', status=405)
+
+##GET request for displaying all genres
+def return_all_genres(request):
+    if request.method == 'GET':
+        genres = Genres.objects.all()
+        genres_serialized = []
+
+        for genre in genres:
+            genres_serialized.append(
+                {
+                    'name': genre.name
+                }
+            )
+        return JsonResponse(genres_serialized, safe=False)
+    else:
+        return HttpResponse('This is a GET only endpoint', status=405)
+
+##POST request for adding a genre
+def add_genre(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        
+        genre = Genres.objects.create(
+            name = data['name']
+        )
+        return JsonResponse({
+            'id': genre.id,
+            'name': genre.name
+        })
+    else:
+        return HttpResponse('This is a post only endpoint!', status=405)
+    
+##DELETE request for deleting a genre
+def delete_genre(request, genre_id):
+    if request.method == 'DELETE':
+        genre = get_object_or_404(Genres, pk=genre_id)
+
+        genre.delete()
+        return HttpResponse(f'Genre id: {genre_id} has been deleted', status=200)
+    else:
+        return HttpResponse('This is a DELETE only endpoint!', status=405)
+
+    
